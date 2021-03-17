@@ -112,8 +112,6 @@ public class AccountController {
     @GetMapping("/getBalance")
     public ResponseEntity<Account> getBalance(@RequestParam("customerId") long customerId, @RequestParam("acct_id") long accountId) throws Exception {
         Customer customer = customerService.findCustomerById(customerId);
-        if(customer!=null)
-            throw new Exception("Customer doesn't exists");
         Account account = accountService.findAccountById(accountId);
         return new ResponseEntity<>(account,HttpStatus.OK);
     }
