@@ -39,7 +39,6 @@ public class AccountController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/addCustomer")
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) throws Exception {
-        Customer customerFromDB = customerService.findCustomerById(customer.getId());
         customerService.save(customer);
         return new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }

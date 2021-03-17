@@ -29,4 +29,12 @@ public class CustomerServiceImpl implements CustomerService {
     public void delete(Customer customer) {
         customerDao.delete(customer);
     }
+
+    @Override
+    public Customer findCustomerIfExists(long id) {
+        Optional<Customer> customer = customerDao.findById(id);
+        if(!customer.isPresent())
+            return  null;
+        return customer.get();
+    }
 }
