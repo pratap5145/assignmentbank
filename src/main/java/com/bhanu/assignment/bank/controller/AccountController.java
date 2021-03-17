@@ -39,8 +39,8 @@ public class AccountController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/addCustomer")
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) throws Exception {
-        customerService.save(customer);
-        return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+        Customer customer1 = customerService.save(customer);
+        return new ResponseEntity<Customer>(customer1, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -60,8 +60,8 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addAccount")
     public ResponseEntity<Account> addCustomer(@RequestBody Account account) throws Exception {
-        if(customerService.findCustomerById(account.getCustomer().getId())!=null){
-            throw new Exception("User doesn't exist");
+        if(customerService.findCustomerById(account.getCustomer().getId())==null){
+            throw new Exception("Customer doesn't exist");
         }
         Timestamp current = new Timestamp(System.currentTimeMillis());
         List<Account> accountDaoByCustomerId = accountService.findAllAccountForCustomer(account.getCustomer().getId());
@@ -74,7 +74,7 @@ public class AccountController {
         }
         //set time
         account.setExecutionTime(current);
-        accountService.save(account);
+        Account accountRet = accountService.save(account);
         List<Account> account1 = accountService.findAllAccountForCustomer(account.getCustomer().getId());
         Optional<Account> tempAccount = account1.stream().filter(account2 -> account2.getAcct_type()==account.getAcct_type()).findFirst();
         if(tempAccount.isPresent()) {
@@ -82,7 +82,7 @@ public class AccountController {
             temp.setExecutionTime(current);
             accountHistoryService.save(new AccountHistory(-1, temp.getId(), temp.getAcct_type(), temp.getBalance(), temp.getExecutionTime(), temp.getCustomer()));
         }
-        return new ResponseEntity<Account>(account, HttpStatus.OK);
+        return new ResponseEntity<Account>(accountRet, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
